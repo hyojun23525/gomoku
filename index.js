@@ -23,7 +23,31 @@ class Gomoku {
         this.board = new Uint8Array(Gomoku.line ** 2);
         this.state = Gomoku.stateCode.ready;
         this.turn = Gomoku.stone.black;
+
+        this.sectionElement = document.getElementById('gomoku');
+        this.boardElement = document.getElementById('gomoku-board');
+        const boardElementBody = document.createElement('tbody');
+        this.boardElement.appendChild(boardElementBody);
+
+        for(let i=0; i<Gomoku.line; i++){
+            const row = document.createElement('tr');
+            row.dataset.y = i;
+
+            for(let j=0; j<Gomoku.line; j++){
+                const cell = document.createElement('td');
+                cell.dataset.x = j;
+                cell.dataset.y = i;
+                cell.classList.add('gomoku-cell');
+
+                if(i == Math.floor(Gomoku.line / 2) && j == Math.floor(Gomoku.line / 2))
+                    cell.classList.add('gomoku-position-point');
+                row.appendChild(cell);
+            }
+
+            boardElementBody.appendChild(row);
+        }
     }
+
     isOutOfRange(x, y){
         return (x < 0 || y < 0 || x >= Gomoku.line || y >= Gomoku.line);
     }
@@ -70,3 +94,5 @@ class Gomoku {
         return winner;
     }
 }
+
+const gomoku = new Gomoku();
