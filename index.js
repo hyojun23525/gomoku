@@ -25,6 +25,7 @@ class Gomoku {
         this.turn = Gomoku.stone.black;
 
         this.sectionElement = document.getElementById('gomoku');
+        this.sectionElement.dataset.turn = this.turn;
         this.boardElement = document.getElementById('gomoku-board');
         const boardElementBody = document.createElement('tbody');
         this.boardElement.appendChild(boardElementBody);
@@ -46,6 +47,8 @@ class Gomoku {
 
             boardElementBody.appendChild(row);
         }
+
+        boardElementBody.addEventListener('click', this.placeStone);
     }
 
     isOutOfRange(x, y){
@@ -56,7 +59,7 @@ class Gomoku {
             return -1;
         return this.board[y*Gomoku.line + x];
     }
-    set(x, y){
+    set(e, x, y){
         if(this.state == Gomoku.stateCode.ready){ this.state = Gomoku.stateCode.running; }
         else if(this.state == Gomoku.stateCode.pause || this.state == Gomoku.stateCode.end){
             alert('Error: The game is paused. You can\'t place a stone.');
@@ -67,6 +70,7 @@ class Gomoku {
             return;
         }
         this.board[y*Gomoku.line + x] = this.turn;
+        e.dataset.stone = this.turn;
 
         for(let l of Gomoku.direction){
             let n = 1;
@@ -88,10 +92,21 @@ class Gomoku {
             }
         }
         this.turn ^= 3;
+        this.sectionElement.dataset.turn = this.turn;
     }
     end(winner){
         this.state = Gomoku.stateCode.end;
+        const winnerName = winner === Gomoku.stone.black ? 'Black' : 'White';
+        setTimeout(() => alert(`${winnerName} 승리!`), 10);
         return winner;
+    }
+    placeStone = (e) => {
+        if(!e.target.classList.contains('gomoku-cell') || 'stone' in e.target.dataset){
+            return;
+        }
+        const x = Number(e.target.dataset.x);
+        const y = Number(e.target.dataset.y);
+        this.set(e.target, x, y);
     }
 }
 
