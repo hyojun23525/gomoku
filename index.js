@@ -65,7 +65,7 @@ class Gomoku {
     }
 
     isOutOfRange(x, y){
-        return (x < 0 || y < 0 || x >= Gomoku.line || y >= Gomoku.line);
+        return (x < 0 || y < 0 || x >= this.line || y >= this.line);
     }
     get(x, y){
         if(this.isOutOfRange(x, y))
