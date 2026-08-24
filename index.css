@@ -1,27 +1,88 @@
 #gomoku-board {
 	  background-color: #F2B06D;
-    width: 400px;
-    height: 400px;
+		width: 100vh;
+    height: 100vh;
+		
     border-collapse: collapse;
+		table-layout: fixed;
 }
 
 .gomoku-cell {
-    border: 1px solid black;
+		position: relative;
+		padding: 0;
 }
 
-#gomoku[data-turn="1"] .gomoku-cell:not([data-stone]):hover{
+.gomoku-cell::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: black;
+  z-index: 1;
+}
+
+.gomoku-cell::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: black;
+  z-index: 1;
+}
+
+.gomoku-top > .gomoku-cell::after {
+  top: 50%;
+}
+
+.gomoku-bottom > .gomoku-cell::after {
+  bottom: 50%;
+}
+
+.gomoku-cell.gomoku-left::before {
+  left: 50%;
+}
+
+.gomoku-cell.gomoku-right::before {
+  right: 50%;
+}
+
+.gomoku-cell.gomoku-point{
+	background-image: radial-gradient(circle, black 30%, transparent 3.5px);
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.gomoku-stone{
+	position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+	width: 90%;
+	height: 90%;
+	border-radius: 50%;
+	z-index: 2;
+}
+
+#gomoku:not(.end) .gomoku-stone:not([data-stone]):hover{
+	cursor: pointer;
+}
+
+#gomoku[data-turn="1"]:not(.end) .gomoku-stone:not([data-stone]):hover{
   background-color: black;
 }
 
-#gomoku[data-turn="2"] .gomoku-cell:not([data-stone]):hover{
-  content: '';
+#gomoku[data-turn="2"]:not(.end) .gomoku-stone:not([data-stone]):hover{
   background-color: white;
 }
 
-.gomoku-cell[data-stone="1"]{
+.gomoku-stone[data-stone="1"]{
   background-color: black;
 }
 
-.gomoku-cell[data-stone="2"]{
+.gomoku-stone[data-stone="2"]{
   background-color: white;
 }

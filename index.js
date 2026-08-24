@@ -1,5 +1,4 @@
 class Gomoku {
-    static line = 15;
     static stone = Object.freeze({
         empty: 0,
         black: 1,
@@ -11,16 +10,22 @@ class Gomoku {
         pause: 2,
         end: 3
     });
-    static nWin = 5;
     static direction = [
         [[-1, -1], [1, 1]],
         [[-1, 1], [1, -1]],
         [[0, 1], [0, -1]],
         [[1, 0], [-1, 0]]
     ];
+	  static getStone(stone){
+			if(stone == Gomoku.stone.black) return 'black';
+			else if(stone == Gomoku.stone.white) return 'white';
+			return 'empty';
+		}
 
     constructor(){
-        this.board = new Uint8Array(Gomoku.line ** 2);
+				this.line = 15;
+				this.nWin = 5;
+        this.board = new Uint8Array(this.line ** 2);
         this.state = Gomoku.stateCode.ready;
         this.turn = Gomoku.stone.black;
 
@@ -30,25 +35,33 @@ class Gomoku {
         const boardElementBody = document.createElement('tbody');
         this.boardElement.appendChild(boardElementBody);
 
-        for(let i=0; i<Gomoku.line; i++){
+        for(let i=0; i<this.line; i++){
             const row = document.createElement('tr');
             row.dataset.y = i;
+						if(i == 0) row.classList.add('gomoku-top');
+						else if(i == this.line-1) row.classList.add('gomoku-bottom');
 
-            for(let j=0; j<Gomoku.line; j++){
+            for(let j=0; j<this.line; j++){
                 const cell = document.createElement('td');
-                cell.dataset.x = j;
-                cell.dataset.y = i;
                 cell.classList.add('gomoku-cell');
+							
+								const stone = document.createElement('div');
+								stone.dataset.x = j;
+                stone.dataset.y = i;
+								stone.classList.add('gomoku-stone');
+								cell.appendChild(stone);
 
-                if(i == Math.floor(Gomoku.line / 2) && j == Math.floor(Gomoku.line / 2))
-                    cell.classList.add('gomoku-position-point');
+                if(i == Math.floor(this.line / 2) && j == Math.floor(this.line / 2))
+                    cell.classList.add('gomoku-point');
+								if(j == 0) cell.classList.add('gomoku-left');
+								if(j == this.line-1) cell.classList.add('gomoku-right');
                 row.appendChild(cell);
             }
 
             boardElementBody.appendChild(row);
         }
 
-        boardElementBody.addEventListener('click', this.placeStone);
+        this.boardElement.addEventListener('click', this.placeStone);
     }
 
     isOutOfRange(x, y){
@@ -57,7 +70,7 @@ class Gomoku {
     get(x, y){
         if(this.isOutOfRange(x, y))
             return -1;
-        return this.board[y*Gomoku.line + x];
+        return this.board[y*this.line + x];
     }
     set(e, x, y){
         if(this.state == Gomoku.stateCode.ready){ this.state = Gomoku.stateCode.running; }
@@ -66,10 +79,10 @@ class Gomoku {
             return;
         }
         if(this.get(x, y) != Gomoku.stone.empty){
-            alert('Error: Invalid board position. \nx: ' + x + ', y: ' + y);
+            alert('Error: Invalid board position. \nx: ' + x + ', y: ' + y + ', error: ' + this.get(x, y));
             return;
         }
-        this.board[y*Gomoku.line + x] = this.turn;
+        this.board[y*this.line + x] = this.turn;
         e.dataset.stone = this.turn;
 
         for(let l of Gomoku.direction){
@@ -85,7 +98,7 @@ class Gomoku {
                 }while(1);
             }
 
-            if(n == Gomoku.nWin){
+            if(n == this.nWin){
                 this.state = Gomoku.stateCode.end;
                 this.end(this.turn);
                 return;
@@ -96,12 +109,14 @@ class Gomoku {
     }
     end(winner){
         this.state = Gomoku.stateCode.end;
+				this.sectionElement.classList.add('end');
         const winnerName = winner === Gomoku.stone.black ? 'Black' : 'White';
         setTimeout(() => alert(`${winnerName} 승리!`), 10);
+				this.boardElement.removeEventListener('click', this.placeStone);
         return winner;
     }
     placeStone = (e) => {
-        if(!e.target.classList.contains('gomoku-cell') || 'stone' in e.target.dataset){
+        if(!e.target.classList.contains('gomoku-stone') || 'stone' in e.target.dataset){
             return;
         }
         const x = Number(e.target.dataset.x);
