@@ -16,15 +16,15 @@ class Gomoku {
         [[0, 1], [0, -1]],
         [[1, 0], [-1, 0]]
     ];
-	  static getStone(stone){
-			if(stone == Gomoku.stone.black) return 'black';
-			else if(stone == Gomoku.stone.white) return 'white';
-			return 'empty';
-		}
+    static getStone(stone){
+        if(stone == Gomoku.stone.black) return 'black';
+        else if(stone == Gomoku.stone.white) return 'white';
+        return 'empty';
+    }
 
     constructor(){
-				this.line = 15;
-				this.nWin = 5;
+        this.line = 15;
+        this.nWin = 5;
         this.board = new Uint8Array(this.line ** 2);
         this.state = Gomoku.stateCode.ready;
         this.turn = Gomoku.stone.black;
@@ -38,23 +38,23 @@ class Gomoku {
         for(let i=0; i<this.line; i++){
             const row = document.createElement('tr');
             row.dataset.y = i;
-						if(i == 0) row.classList.add('gomoku-top');
-						else if(i == this.line-1) row.classList.add('gomoku-bottom');
+            if(i == 0) row.classList.add('gomoku-top');
+            else if(i == this.line-1) row.classList.add('gomoku-bottom');
 
             for(let j=0; j<this.line; j++){
                 const cell = document.createElement('td');
                 cell.classList.add('gomoku-cell');
 							
-								const stone = document.createElement('div');
-								stone.dataset.x = j;
+				const stone = document.createElement('div');
+				stone.dataset.x = j;
                 stone.dataset.y = i;
-								stone.classList.add('gomoku-stone');
-								cell.appendChild(stone);
+				stone.classList.add('gomoku-stone');
+				cell.appendChild(stone);
 
                 if(i == Math.floor(this.line / 2) && j == Math.floor(this.line / 2))
                     cell.classList.add('gomoku-point');
-								if(j == 0) cell.classList.add('gomoku-left');
-								if(j == this.line-1) cell.classList.add('gomoku-right');
+				else if(j == 0) cell.classList.add('gomoku-left');
+				else if(j == this.line-1) cell.classList.add('gomoku-right');
                 row.appendChild(cell);
             }
 
@@ -109,16 +109,15 @@ class Gomoku {
     }
     end(winner){
         this.state = Gomoku.stateCode.end;
-				this.sectionElement.classList.add('end');
+		this.sectionElement.classList.add('end');
         const winnerName = winner === Gomoku.stone.black ? 'Black' : 'White';
         setTimeout(() => alert(`${winnerName} 승리!`), 10);
-				this.boardElement.removeEventListener('click', this.placeStone);
+		this.boardElement.removeEventListener('click', this.placeStone);
         return winner;
     }
     placeStone = (e) => {
-        if(!e.target.classList.contains('gomoku-stone') || 'stone' in e.target.dataset){
+        if(!e.target.classList.contains('gomoku-stone') || 'stone' in e.target.dataset)
             return;
-        }
         const x = Number(e.target.dataset.x);
         const y = Number(e.target.dataset.y);
         this.set(e.target, x, y);
