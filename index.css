@@ -1,0 +1,27 @@
+#gomoku-board {
+	  background-color: #F2B06D;
+    width: 400px;
+    height: 400px;
+    border-collapse: collapse;
+}
+
+.gomoku-cell {
+    border: 1px solid black;
+}
+
+#gomoku[data-turn="1"] .gomoku-cell:not([data-stone]):hover{
+  background-color: black;
+}
+
+#gomoku[data-turn="2"] .gomoku-cell:not([data-stone]):hover{
+  content: '';
+  background-color: white;
+}
+
+.gomoku-cell[data-stone="1"]{
+  background-color: black;
+}
+
+.gomoku-cell[data-stone="2"]{
+  background-color: white;
+}
